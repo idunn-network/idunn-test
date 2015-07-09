@@ -1,0 +1,10 @@
+[package]
+name = "idunn-test"
+version = "0.1.0"
+authors = ["Robbie Huffman <robbie.huffman@gmail.com>"]
+
+[dependencies]
+gpgme = "*"
+time = { version = "*", features = ["rustc-serialize"] }
+rustc-serialize = "*"
+
