@@ -52,7 +52,7 @@ fn handle_client(stream: TcpStream) {
 
 
 fn keylist() {
-    let proto = Protocol::OpenPgp;
+    let proto = gpgme::PROTOCOL_OPENPGP;
     let mut mode = ops::KeyListMode::empty();
     mode.insert(ops::KEY_LIST_MODE_LOCAL);
 
