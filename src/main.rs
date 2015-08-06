@@ -9,22 +9,30 @@ extern crate rustc_serialize;
 mod server;
 mod peers;
 mod proto;
+mod workqueue;
+mod actions;
+mod client;
 
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::io::prelude::*;
+use std::sync::{Arc, Mutex};
 
 use gpgme::Protocol;
 use gpgme::ops;
 
 use server::Server;
 use peers::Peers;
+use workqueue::WorkQueue;
+use workqueue::worker_thread;
 
 fn main() {
 
+    let mut wq = Arc::new(Mutex::new(WorkQueue::new()));
+
     let bind_addr = "127.0.0.1:5432";
     println!("starting server for: {}", bind_addr);
-    let s = Server::new(bind_addr);
+    let s = Server::new(bind_addr, wq);
     let _ = s.thread_handle.join();
 }
 
@@ -88,5 +96,24 @@ fn peer_basics () {
 //fn testkeylist(){
 //    keylist();
 //}
+
+
+#[test]
+fn start_srv() {
+    let bind_addr = "127.0.0.1:5432";
+    let mut wq = Arc::new(Mutex::new(WorkQueue::new()));
+
+    let worker_thread = {
+        let wq = wq.clone();
+        thread::spawn(|| {worker_thread(wq)});
+    };
+
+    println!("starting server for: {}", bind_addr);
+    let s = Server::new(bind_addr, wq);
+    
+
+    let _ = s.thread_handle.join();
+    //let _ = worker_thread.thread_handle.join();
+}
 
 

@@ -7,8 +7,11 @@
 extern crate time;
 extern crate gpgme;
 
-use std::net::{TcpStream, ToSocketAddrs};
 use peers::Peers;
+use workqueue::*;
+//use crypto::*;
+
+use std::net::{TcpStream, ToSocketAddrs};
 use std::error;
 use std::sync::{Arc, Mutex};
 use std::io::BufReader;
@@ -48,7 +51,8 @@ use time::now;
 
 //enum ProtocolError { InvalidMagic, UnsupportedVersion }
 
-pub fn handle_client(stream: TcpStream, mut peers: Arc<Mutex<Peers>>) -> Result<String,String>{
+pub fn handle_client(stream: TcpStream, mut peers: Arc<Mutex<Peers>>,
+                     mut wq: Arc<Mutex<WorkQueue>>) -> Result<String,String>{
     //read first line
     //switch based on version
 
@@ -73,7 +77,7 @@ pub fn handle_client(stream: TcpStream, mut peers: Arc<Mutex<Peers>>) -> Result<
     if a.ne(&"idunn".to_string()) {println!("invalid header"); 
         return Err("Invalid header; expected: idunn: <version>".to_string());} 
 //    if b.ne(&"1.0:".to_string()) {println!("invalid version"); return Err("Unsupported version".to_string())};
-    if b.eq(&"1.0".to_string()) {return handle_1_0(br, bw, peers)}
+    if b.eq(&"1.0".to_string()) {return handle_1_0(br, bw, peers, wq)}
    
     println!("bad version");
     Err("impossible".to_string())
@@ -249,7 +253,7 @@ pub fn encrypt(keystr: String, dat: &String) -> Data<'static> {
 
 
 
-pub fn handle_1_0 (mut br: BufReader<TcpStream>, mut bw: BufWriter<TcpStream>, mut peers: Arc<Mutex<Peers>>) -> Result<String,String> {
+pub fn handle_1_0 (mut br: BufReader<TcpStream>, mut bw: BufWriter<TcpStream>, mut peers: Arc<Mutex<Peers>>, mut wq: Arc<Mutex<WorkQueue>>) -> Result<String,String> {
     println!("1.0....");    
 
     let mut headers = read_headers(&mut br).unwrap();
@@ -263,6 +267,7 @@ pub fn handle_1_0 (mut br: BufReader<TcpStream>, mut bw: BufWriter<TcpStream>, m
         Some(mtype) => {
             match mtype.as_ref() {
                 "ping" => {ping(&b)}
+                "introduce" => {introduce(&b, wq)}
                 _ => {return Err("failed to match message type".to_string())}
             }
         }
@@ -313,4 +318,26 @@ pub fn ping(hin: &HashMap<String, String>) -> HashMap<String, String> {
     hout
 }
 
+pub fn introduce(hin: &HashMap<String, String>,
+                 wq: Arc<Mutex<WorkQueue>>) -> HashMap<String, String> {
+    print!("introducing...");
+    let mut hout = HashMap::new();
+    let k = hin.get("keyid").unwrap();
+    let a = hin.get("address").unwrap();
+    println!("{} @ {}", k, a);
+    let mut wq1 = wq.lock().unwrap();
+//    let &mut q: Vec<IdunnTask> = wq1.queue;
+    println!("got the queue lock");
+    let it = IdunnTask::Introduce{keyid: k.clone(), address: a.clone()};
+    println!("going to insert {:?}", it);
+    wq1.insert(it);
+    println!("server sees in queue: {:?}",wq1.queue);
+ 
+
+    // check for keyid in GPG
+
+    // insert an outgoing ping into the work queue
+    
+    hout
+}
 
