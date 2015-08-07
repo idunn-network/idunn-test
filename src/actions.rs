@@ -10,5 +10,6 @@ use client::Client;
 pub fn introduce(keyid: String, address: String) {
     println!("actions::introduce called with {} @ {}", keyid, address);
     let mut client = Client::new(&address[..]);
+    client.send(keyid);
 }
 

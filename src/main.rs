@@ -12,6 +12,7 @@ mod proto;
 mod workqueue;
 mod actions;
 mod client;
+mod crypto;
 
 use std::net::{TcpListener, TcpStream};
 use std::thread;
