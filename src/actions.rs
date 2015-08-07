@@ -6,10 +6,19 @@
 
 use peers::Peers;
 use client::Client;
+//use crypto::*;
+
+use rustc_serialize::json::{self, ToJson, Json};
+
+use std::collections::HashMap;
 
 pub fn introduce(keyid: String, address: String) {
     println!("actions::introduce called with {} @ {}", keyid, address);
     let mut client = Client::new(&address[..]);
-    client.send(keyid);
+    let mut hm = HashMap::new();
+    hm.insert("message".to_string(), "ping".to_string());
+    hm.insert("source".to_string(), "server".to_string());
+    let jmsg = json::encode(&hm).unwrap();
+    client.send(jmsg);
 }
 
