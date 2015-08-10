@@ -13,6 +13,7 @@ use time::Tm;
 use peers::Peers;
 use workqueue::WorkQueue;
 use proto::handle_client;
+use crypto::sign;
 
 pub struct Client {
     address: String,
@@ -35,6 +36,21 @@ impl Client {
         match self.stream {
             Some(ref mut stream) =>  {
                 let _ = stream.write(&message.into_bytes()[..]);
+                let mut buf = String::new();
+                let _ = stream.read_to_string(&mut buf);
+                buf
+            }
+            None => { println!("attempted to send data, but Client {} has no TcpStream", self.address); "error".to_string() }
+        }
+    }
+    pub fn send_signed(&mut self, message: String) -> String{
+        match self.stream {
+            Some(ref mut stream) =>  {
+                let sig = sign(&message).into_bytes().unwrap();
+                write!(stream, "idunn: {}\n", "1.0"); 
+                write!(stream, "signed-length: {}\n", sig.len());
+                write!(stream, "data-length: {}\n", message.len());
+                let _ = stream.write(&sig[..]);
                 let mut buf = String::new();
                 let _ = stream.read_to_string(&mut buf);
                 buf

@@ -7,4 +7,4 @@ authors = ["Robbie Huffman <robbie.huffman@gmail.com>"]
 gpgme = "*"
 time = { version = "*", features = ["rustc-serialize"] }
 rustc-serialize = "*"
-
+toml = "*"

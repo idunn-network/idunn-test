@@ -6,7 +6,7 @@
 
 use peers::Peers;
 use client::Client;
-//use crypto::*;
+use crypto::*;
 
 use rustc_serialize::json::{self, ToJson, Json};
 
@@ -19,6 +19,6 @@ pub fn introduce(keyid: String, address: String) {
     hm.insert("message".to_string(), "ping".to_string());
     hm.insert("source".to_string(), "server".to_string());
     let jmsg = json::encode(&hm).unwrap();
-    client.send(jmsg);
+    client.send_signed(jmsg);
 }
 

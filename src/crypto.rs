@@ -6,9 +6,6 @@
 
 extern crate gpgme;
 
-use peers::Peers;
-use workqueue::*;
-
 use gpgme::Protocol;
 use gpgme::Data;
 use gpgme::ops;
