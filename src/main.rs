@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![allow(unused_variables)] 
+#![allow(unused_variables)]
 #![allow(unused_imports)]
 
 extern crate gpgme;
@@ -96,7 +96,7 @@ fn start_srv(conf: Option<toml::Value> ) {
 
     println!("starting server for: {}", bind_addr);
     let s = Server::new(&bind_addr, wq);
-    
+
 
     let _ = s.thread_handle.join();
     //let _ = worker_thread.thread_handle.join();

@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![allow(unused_variables)] 
+#![allow(unused_variables)]
 #![allow(unused_imports)]
 
 extern crate time;
@@ -23,7 +23,7 @@ pub struct Peer {
 #[derive(Debug, PartialEq, Eq, RustcDecodable, RustcEncodable)]
 pub struct Peers {
     peers: BTreeMap<String,Peer>,
-} 
+}
 
 impl Peer {
     pub fn new_with_time(addr: String, key: String, last: time::Timespec, offline: bool) -> Peer  {

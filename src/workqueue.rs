@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![allow(unused_variables)] 
+#![allow(unused_variables)]
 #![allow(unused_imports)]
 
 use std::io::{self, BufRead,Write, BufReader};
@@ -13,11 +13,11 @@ use std::collections::HashMap;
 use actions::*;
 
 #[derive(Debug)]
-pub enum IdunnTask { 
+pub enum IdunnTask {
     Ping{address: String},
     Introduce{keyid: String, address: String},
     WhereIs{keyid: String},
-    PeerList 
+    PeerList
 }
 
 
@@ -40,10 +40,10 @@ impl WorkQueue {
 
 pub fn dispatch(it: IdunnTask) {
     match it {
-        IdunnTask::Ping{address: address} => 
+        IdunnTask::Ping{address: address} =>
             { println!("I should ping {}", address); }
-        IdunnTask::Introduce{keyid: keyid, address: address} => 
-            { 
+        IdunnTask::Introduce{keyid: keyid, address: address} =>
+            {
                 println!("I will introduce {} at {}", keyid, address);
                 introduce(keyid, address);
             }
@@ -57,7 +57,7 @@ pub fn worker_thread(wq: Arc<Mutex<WorkQueue>>) {
         println!("count: {}", wq.lock().unwrap().queue.len());
         let result = wq.lock().unwrap().queue.pop();
         match result{
-            Some(item) => { 
+            Some(item) => {
                 dispatch(item);
                 sleep_ms(10u32)
             }

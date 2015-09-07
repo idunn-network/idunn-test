@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![allow(unused_variables)] 
+#![allow(unused_variables)]
 #![allow(unused_imports)]
 #![allow(unused_must_use)]
 #![allow(unused_mut)]
@@ -74,11 +74,11 @@ pub fn handle_client(stream: TcpStream, mut peers: Arc<Mutex<Peers>>,
     let a = items.next().unwrap();
     let b = items.next().unwrap();
     println!("header: {:?}...{:?}",a, b);
-    if a.ne(&"idunn".to_string()) {println!("invalid header"); 
-        return Err("Invalid header; expected: idunn: <version>".to_string());} 
+    if a.ne(&"idunn".to_string()) {println!("invalid header");
+        return Err("Invalid header; expected: idunn: <version>".to_string());}
 //    if b.ne(&"1.0:".to_string()) {println!("invalid version"); return Err("Unsupported version".to_string())};
     if b.eq(&"1.0".to_string()) {return handle_1_0(br, bw, peers, wq)}
-   
+
     println!("bad version");
     Err("impossible".to_string())
 }
@@ -124,8 +124,8 @@ pub fn read_body (br: &mut BufReader<TcpStream>, headers: & HashMap<String, Stri
 
     println!("sl, dl, el: {}, {}, {}", sl, dl, el);
 
-    if sl > 0 && dl > 0{ 
-        println!("running verification"); 
+    if sl > 0 && dl > 0{
+        println!("running verification");
         let mut sbuf = vec! [0u8; sl];
         br.read(&mut sbuf);
         //let sig = String::from_utf8(sbuf).unwrap();
@@ -141,7 +141,7 @@ pub fn read_body (br: &mut BufReader<TcpStream>, headers: & HashMap<String, Stri
         return Ok(Some(h));
 
     } else if el > 0  {
-        println!("decrypting"); 
+        println!("decrypting");
         let mut ebuf = vec! [0u8; el];
         br.read(&mut ebuf);
         println!("edata: {:?}",ebuf.clone());
@@ -175,7 +175,7 @@ pub fn read_body (br: &mut BufReader<TcpStream>, headers: & HashMap<String, Stri
 
 
 pub fn handle_1_0 (mut br: BufReader<TcpStream>, mut bw: BufWriter<TcpStream>, mut peers: Arc<Mutex<Peers>>, mut wq: Arc<Mutex<WorkQueue>>) -> Result<String,String> {
-    println!("1.0....");    
+    println!("1.0....");
 
     let mut headers = read_headers(&mut br).unwrap();
     println!("I got headers: {:?}", headers);
@@ -198,7 +198,7 @@ pub fn handle_1_0 (mut br: BufReader<TcpStream>, mut bw: BufWriter<TcpStream>, m
     println!("handle_1_0 response: {:?}", response);
 
     //encode the resopnse to JSON
-    let jresponse = json::encode(&response).unwrap(); 
+    let jresponse = json::encode(&response).unwrap();
     println!("json response: {:?}", jresponse);
 
 
@@ -253,12 +253,12 @@ pub fn introduce(hin: &HashMap<String, String>,
     println!("going to insert {:?}", it);
     wq1.insert(it);
     println!("server sees in queue: {:?}",wq1.queue);
- 
+
 
     // check for keyid in GPG
 
     // insert an outgoing ping into the work queue
-    
+
     hout
 }
 

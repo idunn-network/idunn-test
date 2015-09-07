@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![allow(unused_variables)] 
+#![allow(unused_variables)]
 #![allow(unused_imports)]
 
 use std::collections::{VecDeque, VecMap};
@@ -47,7 +47,7 @@ impl Client {
         match self.stream {
             Some(ref mut stream) =>  {
                 let sig = sign(&message).into_bytes().unwrap();
-                write!(stream, "idunn: {}\n", "1.0"); 
+                write!(stream, "idunn: {}\n", "1.0");
                 write!(stream, "signed-length: {}\n", sig.len());
                 write!(stream, "data-length: {}\n", message.len());
                 let _ = stream.write(&sig[..]);

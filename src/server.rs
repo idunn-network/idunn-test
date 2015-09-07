@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![allow(unused_variables)] 
+#![allow(unused_variables)]
 #![allow(unused_imports)]
 
 use std::collections::{VecDeque, VecMap};
@@ -27,7 +27,7 @@ impl Server {
         // .accept() -> Result<(TcpStream, SocketAddr)>
         let listener = TcpListener::bind(addr).unwrap();
         println!("binding {}", addr);
-       
+
         let mut p = Arc::new(Mutex::new(Peers::new()));
         let server_thread = {
             let p = p.clone();
